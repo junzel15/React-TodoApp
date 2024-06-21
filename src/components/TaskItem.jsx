@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineSave } from "react-icons/ai";
 import "./Taskitem.css";
 
-const Taskitem = () => {
+const TaskItem = () => {
   const [tasks, setTasks] = useState(() => {
     const storedTasks = localStorage.getItem("tasks");
     return storedTasks ? JSON.parse(storedTasks) : [];
@@ -125,4 +125,4 @@ const Taskitem = () => {
   );
 };
 
-export default Taskitem;
+export default TaskItem;
