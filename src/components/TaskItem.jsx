@@ -3,7 +3,6 @@ import { AiOutlineEdit, AiOutlineDelete, AiOutlineSave } from "react-icons/ai";
 import "./Taskitem.css";
 
 const Taskitem = () => {
-  // FOR PR CHANGES //
   const [tasks, setTasks] = useState(() => {
     const storedTasks = localStorage.getItem("tasks");
     return storedTasks ? JSON.parse(storedTasks) : [];
