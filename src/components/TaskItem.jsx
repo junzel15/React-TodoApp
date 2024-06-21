@@ -3,25 +3,20 @@ import { AiOutlineEdit, AiOutlineDelete, AiOutlineSave } from "react-icons/ai";
 import "./Taskitem.css";
 
 const Taskitem = () => {
-  // State for tasks, initializing from local storage if available
   const [tasks, setTasks] = useState(() => {
     const storedTasks = localStorage.getItem("tasks");
     return storedTasks ? JSON.parse(storedTasks) : [];
   });
 
-  // State for new task inputs
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
 
-  // State for editing tasks
-  const [editTask, setEditTask] = useState(null); // Store the task being edited
+  const [editTask, setEditTask] = useState(null);
 
-  // useEffect to save tasks to local storage whenever tasks state changes
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  // Function to handle adding a new task
   const handleAddTask = () => {
     if (newTaskName.trim() !== "" && newTaskDescription.trim() !== "") {
       const newTask = {
@@ -34,25 +29,21 @@ const Taskitem = () => {
     }
   };
 
-  // Function to handle deleting a task
   const handleDeleteTask = (taskToDelete) => {
     setTasks(tasks.filter((task) => task !== taskToDelete));
   };
 
-  // Function to handle editing a task
   const handleEditTask = (task) => {
-    setEditTask(task); // Set the task being edited
+    setEditTask(task);
   };
 
-  // Function to save edited task
   const handleSaveEditTask = () => {
     setTasks(
       tasks.map((task) => (task.id === editTask.id ? { ...editTask } : task))
     );
-    setEditTask(null); // Clear the edit task state
+    setEditTask(null);
   };
 
-  // JSX structure for the component
   return (
     <div className="task-container">
       <h1>To-Do App</h1>
