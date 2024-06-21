@@ -1,135 +1,123 @@
-import React, { useState, useEffect } from "react"; // Import React and necessary hooks
-import { AiOutlineEdit, AiOutlineDelete, AiOutlineSave } from "react-icons/ai"; // Import icons from react-icons
-import "./Taskitem.css"; // Import CSS for Taskitem component
+import React, { useState, useEffect } from "react";
+import { AiOutlineEdit, AiOutlineDelete, AiOutlineSave } from "react-icons/ai";
+import "./Taskitem.css";
 
-const TodoItem = () => {
-  // State to manage tasks, initializes from localStorage if available
-  const [taskList, setTaskList] = useState(() => {
-    const storedTaskList = localStorage.getItem("taskList"); // Get stored tasks from localStorage
-    return storedTaskList ? JSON.parse(storedTaskList) : []; // Parse stored tasks or return empty array
+const Taskitem = () => {
+  const [tasks, setTasks] = useState(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    return storedTasks ? JSON.parse(storedTasks) : [];
   });
 
-  // State to manage new task's name
-  const [taskName, setTaskName] = useState(""); // Initialize taskName state
-  // State to manage new task's description
-  const [taskDescription, setTaskDescription] = useState(""); // Initialize taskDescription state
+  const [newTaskName, setNewTaskName] = useState("");
+  const [newTaskDescription, setNewTaskDescription] = useState("");
 
-  // State to manage task being edited
-  const [currentTask, setCurrentTask] = useState(null); // Initialize currentTask state
+  const [taskBeingEdited, setTaskBeingEdited] = useState(null);
 
-  // Effect to update localStorage whenever taskList state changes
   useEffect(() => {
-    localStorage.setItem("taskList", JSON.stringify(taskList)); // Update localStorage with current tasks
-  }, [taskList]); // Dependency array includes taskList
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
-  // Function to add a new task
-  const addNewTask = () => {
-    if (taskName.trim() !== "" && taskDescription.trim() !== "") {
-      // Check if inputs are not empty
+  const addTask = () => {
+    if (newTaskName.trim() !== "" && newTaskDescription.trim() !== "") {
       const newTask = {
-        name: taskName, // Set name of new task
-        description: taskDescription, // Set description of new task
+        name: newTaskName,
+        description: newTaskDescription,
       };
-      setTaskList([...taskList, newTask]); // Add new task to taskList state
-      setTaskName(""); // Reset taskName state
-      setTaskDescription(""); // Reset taskDescription state
+      setTasks([...tasks, newTask]);
+      setNewTaskName("");
+      setNewTaskDescription("");
     }
   };
 
-  // Function to delete a task
-  const removeTask = (taskToRemove) => {
-    setTaskList(taskList.filter((task) => task !== taskToRemove)); // Remove task from taskList state
+  const deleteTask = (taskToDelete) => {
+    setTasks(tasks.filter((task) => task !== taskToDelete));
   };
 
-  // Function to start editing a task
-  const editTask = (task) => {
-    setCurrentTask(task); // Set currentTask state to selected task
+  const startEditingTask = (task) => {
+    setTaskBeingEdited(task);
   };
 
-  // Function to save an edited task
-  const saveTaskChanges = () => {
-    setTaskList(
-      taskList.map(
-        (task) => (task.id === currentTask.id ? { ...currentTask } : task) // Update task in taskList state
+  const saveEditedTask = () => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskBeingEdited.id ? { ...taskBeingEdited } : task
       )
     );
-    setCurrentTask(null); // Reset currentTask state
+    setTaskBeingEdited(null);
   };
 
   return (
     <div className="task-container">
-      <h1>To-Do App</h1> {/* Header for the app */}
+      <h1>To-Do App</h1>
       <input
         type="text"
-        value={taskName}
-        onChange={(e) => setTaskName(e.target.value)} // Update taskName state on change
+        value={newTaskName}
+        onChange={(e) => setNewTaskName(e.target.value)}
         placeholder="Task Name"
         className="task-input"
       />
       <input
         type="text"
-        value={taskDescription}
-        onChange={(e) => setTaskDescription(e.target.value)} // Update taskDescription state on change
+        value={newTaskDescription}
+        onChange={(e) => setNewTaskDescription(e.target.value)}
         placeholder="Task Description"
         className="task-input"
       />
-      <button onClick={addNewTask} className="task-button">
-        <AiOutlineSave /> Add {/* Button to add new task */}
+      <button onClick={addTask} className="task-button">
+        <AiOutlineSave /> Add
       </button>
-      <h2>Task List</h2> {/* Header for task list */}
+      <h2>Task List</h2>
       <ul>
-        {taskList.map((task, index) => (
+        {tasks.map((task, index) => (
           <li key={index} className="task-item">
             <div>
-              <strong>Task Name:</strong> {task.name} {/* Display task name */}
+              <strong>Task Name:</strong> {task.name}
             </div>
             <div>
-              <strong>Task Description:</strong> {task.description}{" "}
-              {/* Display task description */}
+              <strong>Task Description:</strong> {task.description}
             </div>
             <div>
               <button
-                onClick={() => editTask(task)}
+                onClick={() => startEditingTask(task)}
                 className="task-button edit-button"
               >
-                <AiOutlineEdit /> Edit {/* Button to edit task */}
+                <AiOutlineEdit /> Edit
               </button>
               <button
-                onClick={() => removeTask(task)}
+                onClick={() => deleteTask(task)}
                 className="task-button delete-button"
               >
-                <AiOutlineDelete /> Delete {/* Button to delete task */}
+                <AiOutlineDelete /> Delete
               </button>
             </div>
           </li>
         ))}
       </ul>
-      {currentTask && (
+      {taskBeingEdited && (
         <div className="edit-container">
           <input
             type="text"
-            value={currentTask.name}
-            onChange={
-              (e) => setCurrentTask({ ...currentTask, name: e.target.value }) // Update currentTask name on change
+            value={taskBeingEdited.name}
+            onChange={(e) =>
+              setTaskBeingEdited({ ...taskBeingEdited, name: e.target.value })
             }
             placeholder="Edit Task Name"
             className="task-input"
           />
           <input
             type="text"
-            value={currentTask.description}
-            onChange={
-              (e) =>
-                setCurrentTask({
-                  ...currentTask,
-                  description: e.target.value,
-                }) // Update currentTask description on change
+            value={taskBeingEdited.description}
+            onChange={(e) =>
+              setTaskBeingEdited({
+                ...taskBeingEdited,
+                description: e.target.value,
+              })
             }
             placeholder="Edit Task Description"
             className="task-input"
           />
-          <button onClick={saveTaskChanges} className="task-button save-button">
-            <AiOutlineSave /> Save {/* Button to save edited task */}
+          <button onClick={saveEditedTask} className="task-button save-button">
+            <AiOutlineSave /> Save
           </button>
         </div>
       )}
@@ -137,4 +125,4 @@ const TodoItem = () => {
   );
 };
 
-export default TodoItem; // Export TodoItem component
+export default Taskitem;
