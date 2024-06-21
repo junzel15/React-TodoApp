@@ -11,16 +11,15 @@ const Taskitem = () => {
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
 
-  const [editTask, setEditTask] = useState(null);
+  const [taskBeingEdited, setTaskBeingEdited] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const handleAddTask = () => {
+  const addTask = () => {
     if (newTaskName.trim() !== "" && newTaskDescription.trim() !== "") {
       const newTask = {
-        id: Date.now(),
         name: newTaskName,
         description: newTaskDescription,
       };
@@ -30,19 +29,21 @@ const Taskitem = () => {
     }
   };
 
-  const handleDeleteTask = (taskId) => {
-    setTasks(tasks.filter((task) => task.id !== taskId));
+  const deleteTask = (taskToDelete) => {
+    setTasks(tasks.filter((task) => task !== taskToDelete));
   };
 
-  const handleEditTask = (task) => {
-    setEditTask(task);
+  const startEditingTask = (task) => {
+    setTaskBeingEdited(task);
   };
 
-  const handleSaveEditTask = () => {
+  const saveEditedTask = () => {
     setTasks(
-      tasks.map((task) => (task.id === editTask.id ? { ...editTask } : task))
+      tasks.map((task) =>
+        task.id === taskBeingEdited.id ? { ...taskBeingEdited } : task
+      )
     );
-    setEditTask(null);
+    setTaskBeingEdited(null);
   };
 
   return (
@@ -62,13 +63,13 @@ const Taskitem = () => {
         placeholder="Task Description"
         className="task-input"
       />
-      <button onClick={handleAddTask} className="task-button">
+      <button onClick={addTask} className="task-button">
         <AiOutlineSave /> Add
       </button>
       <h2>Task List</h2>
       <ul>
-        {tasks.map((task) => (
-          <li key={task.id} className="task-item">
+        {tasks.map((task, index) => (
+          <li key={index} className="task-item">
             <div>
               <strong>Task Name:</strong> {task.name}
             </div>
@@ -77,13 +78,13 @@ const Taskitem = () => {
             </div>
             <div>
               <button
-                onClick={() => handleEditTask(task)}
+                onClick={() => startEditingTask(task)}
                 className="task-button edit-button"
               >
                 <AiOutlineEdit /> Edit
               </button>
               <button
-                onClick={() => handleDeleteTask(task.id)}
+                onClick={() => deleteTask(task)}
                 className="task-button delete-button"
               >
                 <AiOutlineDelete /> Delete
@@ -92,28 +93,30 @@ const Taskitem = () => {
           </li>
         ))}
       </ul>
-      {editTask && (
+      {taskBeingEdited && (
         <div className="edit-container">
           <input
             type="text"
-            value={editTask.name}
-            onChange={(e) => setEditTask({ ...editTask, name: e.target.value })}
+            value={taskBeingEdited.name}
+            onChange={(e) =>
+              setTaskBeingEdited({ ...taskBeingEdited, name: e.target.value })
+            }
             placeholder="Edit Task Name"
             className="task-input"
           />
           <input
             type="text"
-            value={editTask.description}
+            value={taskBeingEdited.description}
             onChange={(e) =>
-              setEditTask({ ...editTask, description: e.target.value })
+              setTaskBeingEdited({
+                ...taskBeingEdited,
+                description: e.target.value,
+              })
             }
             placeholder="Edit Task Description"
             className="task-input"
           />
-          <button
-            onClick={handleSaveEditTask}
-            className="task-button save-button"
-          >
+          <button onClick={saveEditedTask} className="task-button save-button">
             <AiOutlineSave /> Save
           </button>
         </div>
