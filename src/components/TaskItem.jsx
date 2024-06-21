@@ -20,6 +20,7 @@ const Taskitem = () => {
   const handleAddTask = () => {
     if (newTaskName.trim() !== "" && newTaskDescription.trim() !== "") {
       const newTask = {
+        id: Date.now(),
         name: newTaskName,
         description: newTaskDescription,
       };
@@ -29,8 +30,8 @@ const Taskitem = () => {
     }
   };
 
-  const handleDeleteTask = (taskToDelete) => {
-    setTasks(tasks.filter((task) => task !== taskToDelete));
+  const handleDeleteTask = (taskId) => {
+    setTasks(tasks.filter((task) => task.id !== taskId));
   };
 
   const handleEditTask = (task) => {
@@ -66,8 +67,8 @@ const Taskitem = () => {
       </button>
       <h2>Task List</h2>
       <ul>
-        {tasks.map((task, index) => (
-          <li key={index} className="task-item">
+        {tasks.map((task) => (
+          <li key={task.id} className="task-item">
             <div>
               <strong>Task Name:</strong> {task.name}
             </div>
@@ -82,7 +83,7 @@ const Taskitem = () => {
                 <AiOutlineEdit /> Edit
               </button>
               <button
-                onClick={() => handleDeleteTask(task)}
+                onClick={() => handleDeleteTask(task.id)}
                 className="task-button delete-button"
               >
                 <AiOutlineDelete /> Delete
