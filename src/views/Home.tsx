@@ -1,7 +1,7 @@
 import React from "react";
-import Taskitem from "../components/Taskitem";
+import Taskitem from "../components/TaskItem";
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <div>
       <Taskitem />

@@ -2,16 +2,21 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineSave } from "react-icons/ai";
 import "./Taskitem.css";
 
-const TaskItem = () => {
-  const [tasks, setTasks] = useState(() => {
+interface Task {
+  id: number;
+  name: string;
+  description: string;
+}
+
+const Taskitem: React.FC = () => {
+  const [tasks, setTasks] = useState<Task[]>(() => {
     const storedTasks = localStorage.getItem("tasks");
     return storedTasks ? JSON.parse(storedTasks) : [];
   });
 
-  const [newTaskName, setNewTaskName] = useState("");
-  const [newTaskDescription, setNewTaskDescription] = useState("");
-
-  const [taskBeingEdited, setTaskBeingEdited] = useState(null);
+  const [newTaskName, setNewTaskName] = useState<string>("");
+  const [newTaskDescription, setNewTaskDescription] = useState<string>("");
+  const [taskBeingEdited, setTaskBeingEdited] = useState<Task | null>(null);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -19,7 +24,8 @@ const TaskItem = () => {
 
   const addTask = () => {
     if (newTaskName.trim() !== "" && newTaskDescription.trim() !== "") {
-      const newTask = {
+      const newTask: Task = {
+        id: tasks.length + 1,
         name: newTaskName,
         description: newTaskDescription,
       };
@@ -29,18 +35,18 @@ const TaskItem = () => {
     }
   };
 
-  const deleteTask = (taskToDelete) => {
+  const deleteTask = (taskToDelete: Task) => {
     setTasks(tasks.filter((task) => task !== taskToDelete));
   };
 
-  const startEditingTask = (task) => {
+  const startEditingTask = (task: Task) => {
     setTaskBeingEdited(task);
   };
 
   const saveEditedTask = () => {
     setTasks(
       tasks.map((task) =>
-        task.id === taskBeingEdited.id ? { ...taskBeingEdited } : task
+        task.id === taskBeingEdited?.id ? { ...taskBeingEdited } : task
       )
     );
     setTaskBeingEdited(null);
@@ -125,4 +131,4 @@ const TaskItem = () => {
   );
 };
 
-export default TaskItem;
+export default Taskitem;

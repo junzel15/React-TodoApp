@@ -4,17 +4,12 @@ import routes from "./routes";
 import Home from "./views/Home";
 import "./App.css";
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <Router>
       <Routes>
         {routes.map((route, index) => (
-          <Route
-            key={index}
-            path={route.path}
-            element={route.element}
-            exact={route.exact}
-          />
+          <Route key={index} path={route.path} element={route.element} />
         ))}
         <Route path="/" element={<Home />} />
       </Routes>
